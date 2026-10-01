@@ -14,6 +14,10 @@ Aplicación de escritorio para el control de inventario del almacén **Repuestos
 - Reinaldo Andrés Girón Castro
 - Sebastián Pérez Pacheco
 
+## Propietarios
+- William Reinaldo Giron Cuellar
+- Ana Elisa Castro Moros
+
 ## Descripción
 
 El proyecto consiste en el desarrollo de una aplicación de escritorio orientada a la gestión del inventario del almacén Repuestos Anelisa.
@@ -22,7 +26,6 @@ El sistema permitirá administrar productos, registrar compras y ventas, consult
 
 ## Estructura del repositorio
 
-```text
 Proyecto/
 │
 ├── README.md
