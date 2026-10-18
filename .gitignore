@@ -1,0 +1,20 @@
+# Default ignored files
+/shelf/
+/.idea/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+# Maven
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Archivos de datos reales de la aplicación
+app-data/
