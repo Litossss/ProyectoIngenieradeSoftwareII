@@ -1,38 +1,32 @@
-
 package com.repuestosanelisa.controller;
 
+import com.repuestosanelisa.App;
+import com.repuestosanelisa.service.Contexto;
+import com.repuestosanelisa.util.Alertas;
+import com.repuestosanelisa.util.NegocioException;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.scene.Node;
-import javafx.event.ActionEvent;
 
-import java.io.IOException;
 
 public class LoginController {
+    @FXML private TextField usuarioField;
+    @FXML private PasswordField contrasenaField;
+    @FXML private Label lblError;
 
     @FXML
-    private void iniciarSesion(ActionEvent event) {
+    private void iniciarSesion() {
+        Alertas.ocultarError(lblError);
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource(
-                            "/com/repuestosanelisa/view/inventario.fxml"
-                    )
-            );
-
-            Scene scene = new Scene(loader.load(), 800, 500);
-
-            Stage ventana = (Stage) ((Node) event.getSource())
-                    .getScene().getWindow();
-
-            ventana.setTitle("Repuestos Anelisa - Inventario");
-            ventana.setScene(scene);
-            ventana.setResizable(true);
-            ventana.centerOnScreen();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            Contexto.get().usuarios.login(usuarioField.getText(), contrasenaField.getText());
+            App.mostrarPrincipal((Stage) usuarioField.getScene().getWindow());
+        } catch (NegocioException e) {
+            Alertas.mostrarError(lblError, e.getMessage());
+            contrasenaField.clear();
+        } catch (Exception e) {
+            Alertas.mostrarError(lblError, "No se pudo abrir la aplicación: " + e.getMessage());
         }
     }
 }

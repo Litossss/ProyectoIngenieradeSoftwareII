@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.repuestosanelisa.controller.MainController"
+            stylesheets="@styles.css" prefWidth="1180" prefHeight="720">
+
+    <fx:define><ToggleGroup fx:id="grupoMenu"/></fx:define>
+
+    <left>
+        <VBox styleClass="sidebar" prefWidth="200" minWidth="200" spacing="8">
+            <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+
+            <StackPane styleClass="logo-box" prefHeight="76" minHeight="76">
+                <VBox alignment="CENTER" spacing="6">
+                    <Label text="[ LOGO ]" style="-fx-text-fill: #52606d; -fx-font-size: 11px;"/>
+                    <Label text="Repuestos Anelisa" styleClass="logo-nombre"/>
+                </VBox>
+            </StackPane>
+
+            <VBox spacing="8">
+                <padding><Insets top="10"/></padding>
+                <ToggleButton fx:id="btnInicio" text="Inicio" toggleGroup="$grupoMenu" onAction="#irInicio" styleClass="nav-btn" maxWidth="Infinity"/>
+                <ToggleButton fx:id="btnInventario" text="Inventario" toggleGroup="$grupoMenu" onAction="#irInventario" styleClass="nav-btn" maxWidth="Infinity"/>
+                <ToggleButton fx:id="btnVentas" text="Ventas" toggleGroup="$grupoMenu" onAction="#irVentas" styleClass="nav-btn" maxWidth="Infinity"/>
+                <ToggleButton fx:id="btnCompras" text="Compras" toggleGroup="$grupoMenu" onAction="#irCompras" styleClass="nav-btn" maxWidth="Infinity"/>
+                <ToggleButton fx:id="btnReportes" text="Reportes" toggleGroup="$grupoMenu" onAction="#irReportes" styleClass="nav-btn" maxWidth="Infinity"/>
+                <ToggleButton fx:id="btnUsuarios" text="Usuarios" toggleGroup="$grupoMenu" onAction="#irUsuarios" styleClass="nav-btn" maxWidth="Infinity"/>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+            <Label text="v1.0" styleClass="version"/>
+        </VBox>
+    </left>
+
+    <top>
+        <HBox styleClass="header" alignment="CENTER_LEFT" spacing="12">
+            <Label fx:id="lblTitulo" text="Inicio" styleClass="titulo-vista"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblUsuario" styleClass="chip-usuario"/>
+            <Button text="Salir" onAction="#salir" styleClass="btn-secondary"/>
+        </HBox>
+    </top>
+
+    <center><StackPane fx:id="contenido" styleClass="contenido"/></center>
+</BorderPane>

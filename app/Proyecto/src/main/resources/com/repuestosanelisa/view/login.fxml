@@ -5,39 +5,38 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.repuestosanelisa.controller.LoginController"
-      alignment="CENTER"
-      spacing="14"
-      style="-fx-background-color: #f4f6f8;"
-      prefWidth="420"
-      prefHeight="320">
 
-    <padding>
-        <Insets top="28" right="35" bottom="28" left="35"/>
-    </padding>
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.repuestosanelisa.controller.LoginController"
+           stylesheets="@styles.css" styleClass="fondo-login" prefWidth="560" prefHeight="640">
 
-    <Label text="REPUESTOS ANELISA"
-           style="-fx-font-size: 23px; -fx-font-weight: bold; -fx-text-fill: #243447;"/>
+    <VBox alignment="CENTER" spacing="10" styleClass="card" maxWidth="400" maxHeight="-Infinity">
+        <padding><Insets top="28" right="36" bottom="28" left="36"/></padding>
 
-    <Label text="Inicio de sesión"
-           style="-fx-font-size: 15px; -fx-text-fill: #526579;"/>
+        <StackPane styleClass="logo-box" prefWidth="160" prefHeight="76" minHeight="76" maxWidth="160" maxHeight="76">
+            <Label text="[ LOGO ]" style="-fx-text-fill: #52606d;"/>
+        </StackPane>
 
-    <TextField fx:id="usuarioField"
-               promptText="Nombre de usuario"
-               maxWidth="300"/>
+        <Label text="Repuestos Anelisa" styleClass="titulo-login"/>
+        <Label text="Control de inventario" styleClass="subtitulo"/>
 
-    <PasswordField fx:id="contrasenaField"
-                   promptText="Contraseña"
-                   maxWidth="300"/>
+        <VBox spacing="4" maxWidth="Infinity">
+            <Label text="Usuario" styleClass="etiqueta"/>
+            <TextField fx:id="usuarioField" promptText="Ingrese su usuario"/>
+        </VBox>
+        <VBox spacing="4" maxWidth="Infinity">
+            <Label text="Contraseña" styleClass="etiqueta"/>
+            <PasswordField fx:id="contrasenaField" promptText="Ingrese su contraseña" onAction="#iniciarSesion"/>
+        </VBox>
 
-    <Button text="Ingresar"
-            onAction="#iniciarSesion"
-            maxWidth="300"
-            style="-fx-background-color: #2457a7; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        <Button text="INGRESAR" onAction="#iniciarSesion" defaultButton="true" maxWidth="Infinity" styleClass="btn-primary"/>
 
+        <Label fx:id="lblError" styleClass="error-box" visible="false" managed="false" wrapText="true" maxWidth="Infinity"/>
 
-</VBox>
+        <Label text="Prototipo — Administrador: anelisa / admin123   Empleado: empleado1 / emp123"
+               styleClass="nota" wrapText="true"/>
+    </VBox>
+</StackPane>

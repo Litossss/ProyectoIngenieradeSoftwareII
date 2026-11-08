@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.repuestosanelisa.controller.ProductoFormController" styleClass="vista">
+
+    <VBox styleClass="card" spacing="14" VBox.vgrow="ALWAYS">
+        <padding><Insets top="20" right="22" bottom="20" left="22"/></padding>
+
+        <Label text="Datos del producto" styleClass="seccion"/>
+
+        <HBox spacing="26" VBox.vgrow="ALWAYS">
+            <GridPane hgap="14" vgap="12" HBox.hgrow="ALWAYS">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33.3" hgrow="ALWAYS"/>
+                    <ColumnConstraints percentWidth="33.3" hgrow="ALWAYS"/>
+                    <ColumnConstraints percentWidth="33.4" hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label text="Código / identificador *" styleClass="etiqueta"/>
+                    <TextField fx:id="txtCodigo" promptText="Ej: A-001"/>
+                </VBox>
+                <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="2">
+                    <Label text="Nombre *" styleClass="etiqueta"/>
+                    <TextField fx:id="txtNombre" promptText="Nombre del producto"/>
+                </VBox>
+
+                <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <Label text="Categoría *" styleClass="etiqueta"/>
+                    <ComboBox fx:id="cmbCategoria" editable="true" promptText="Seleccione o escriba..." maxWidth="Infinity"/>
+                </VBox>
+                <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <Label text="Cantidad *" styleClass="etiqueta"/>
+                    <TextField fx:id="txtCantidad" text="0"/>
+                </VBox>
+                <VBox spacing="4" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                    <Label text="Precio *" styleClass="etiqueta"/>
+                    <TextField fx:id="txtPrecio" text="0"/>
+                </VBox>
+
+                <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="3">
+                    <Label text="Proveedor" styleClass="etiqueta"/>
+                    <ComboBox fx:id="cmbProveedor" promptText="Seleccione..." maxWidth="Infinity"/>
+                </VBox>
+
+                <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="3">
+                    <Label text="Descripción / otros datos (opcional)" styleClass="etiqueta"/>
+                    <TextArea fx:id="txtDescripcion" prefRowCount="4" wrapText="true"/>
+                </VBox>
+            </GridPane>
+
+            <VBox spacing="8" prefWidth="230" minWidth="230">
+                <Label text="Fotografía de referencia" styleClass="etiqueta"/>
+                <StackPane styleClass="logo-box" prefWidth="230" prefHeight="200" minHeight="200">
+                    <ImageView fx:id="imgFoto" fitWidth="220" fitHeight="190" preserveRatio="true"/>
+                    <Label fx:id="lblSinFoto" text="Vista previa de la foto" style="-fx-text-fill: #7b8794;"/>
+                </StackPane>
+                <Button text="Subir foto (opcional)" onAction="#elegirFoto" styleClass="btn-secondary" maxWidth="Infinity"/>
+                <Label text="* Campos obligatorios" styleClass="nota"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <Label fx:id="lblError" styleClass="error-box" visible="false" managed="false" wrapText="true" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="CANCELAR" onAction="#cancelar" styleClass="btn-secondary" minWidth="140"/>
+            <Button text="GUARDAR PRODUCTO" onAction="#guardar" styleClass="btn-primary" minWidth="180"/>
+        </HBox>
+    </VBox>
+</VBox>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.repuestosanelisa.controller.ReportesController" spacing="18" styleClass="vista">
+
+    <fx:define><ToggleGroup fx:id="grupoTipo"/></fx:define>
+
+    <VBox styleClass="card" spacing="10" prefWidth="330" minWidth="330" maxWidth="330">
+        <padding><Insets top="18" right="20" bottom="18" left="20"/></padding>
+
+        <Label text="Configurar reporte" styleClass="seccion"/>
+        <Label text="Tipo de reporte" styleClass="etiqueta"/>
+        <RadioButton fx:id="rbInventario" text="Inventario" toggleGroup="$grupoTipo"/>
+        <RadioButton fx:id="rbVentas" text="Ventas" selected="true" toggleGroup="$grupoTipo"/>
+        <RadioButton fx:id="rbCompras" text="Compras" toggleGroup="$grupoTipo"/>
+
+        <HBox spacing="10">
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Desde" styleClass="etiqueta"/>
+                <DatePicker fx:id="dpDesde" promptText="dd/mm/aaaa" maxWidth="Infinity"/>
+            </VBox>
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Hasta" styleClass="etiqueta"/>
+                <DatePicker fx:id="dpHasta" promptText="dd/mm/aaaa" maxWidth="Infinity"/>
+            </VBox>
+        </HBox>
+
+        <Label text="Categoría (opcional)" styleClass="etiqueta"/>
+        <ComboBox fx:id="cmbCategoria" maxWidth="Infinity"/>
+
+        <Button text="GENERAR PDF" onAction="#generar" styleClass="btn-primary" maxWidth="Infinity"/>
+        <Label fx:id="lblError" styleClass="error-box" visible="false" managed="false" wrapText="true" maxWidth="Infinity"/>
+        <Label text="El reporte de inventario no usa rango de fechas." styleClass="nota" wrapText="true"/>
+    </VBox>
+
+    <VBox spacing="8" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+        <Label text="Vista previa del reporte" styleClass="seccion"/>
+        <TextArea fx:id="areaVista" editable="false" VBox.vgrow="ALWAYS"
+                  style="-fx-font-family: 'Monospaced'; -fx-font-size: 12px;"
+                  promptText="Aquí aparecerá la vista previa del reporte..."/>
+        <HBox spacing="10">
+            <Button text="Imprimir" onAction="#imprimir" styleClass="btn-secondary" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button text="Guardar PDF" onAction="#guardarPdf" styleClass="btn-secondary" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button text="Cerrar" onAction="#cerrar" styleClass="btn-secondary" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        </HBox>
+    </VBox>
+</HBox>
