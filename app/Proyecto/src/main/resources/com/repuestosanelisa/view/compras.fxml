@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-
+<!-- Pantalla 6: Registro de compras a proveedor (entradas) — solo Administrador -->
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.repuestosanelisa.controller.ComprasController" spacing="10" styleClass="vista">
 

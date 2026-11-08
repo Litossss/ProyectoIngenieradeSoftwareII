@@ -1,6 +1,6 @@
 package com.repuestosanelisa.model;
 
-
+/** Línea de una venta (precio de venta) o de una compra (costo unitario). */
 public class LineaDetalle {
     private final String codigo;
     private final String nombre;

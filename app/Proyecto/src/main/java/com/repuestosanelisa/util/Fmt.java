@@ -52,7 +52,7 @@ public final class Fmt {
         return s.length() <= max ? s : s.substring(0, max - 1) + "~";
     }
 
-    /** No tocar, funciona pero no se como */
+    /** Convertidor dd/mm/aaaa para los DatePicker. */
     public static StringConverter<LocalDate> convertidorFecha() {
         return new StringConverter<>() {
             @Override public String toString(LocalDate d) { return d == null ? "" : FECHA.format(d); }

@@ -3,7 +3,7 @@ package com.repuestosanelisa.controller;
 import com.repuestosanelisa.model.Producto;
 import com.repuestosanelisa.security.Modulo;
 
-
+/** Puente para que las vistas hijas pidan cambiar de pantalla sin conocer MainController. */
 public final class Navegacion {
     private static MainController principal;
 

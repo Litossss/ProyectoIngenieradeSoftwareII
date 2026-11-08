@@ -16,6 +16,7 @@ import javafx.scene.text.Text;
 
 import java.time.LocalDate;
 
+/** Pantalla 7 – Generación de reportes en PDF (RF03). Solo administrador. */
 public class ReportesController {
     @FXML private ToggleGroup grupoTipo;
     @FXML private RadioButton rbInventario, rbVentas, rbCompras;

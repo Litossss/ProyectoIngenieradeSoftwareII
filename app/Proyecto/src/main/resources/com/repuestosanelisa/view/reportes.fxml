@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
+<!-- Pantalla 7: Generación de reportes en PDF (RF03) — solo Administrador -->
 <HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.repuestosanelisa.controller.ReportesController" spacing="18" styleClass="vista">
 

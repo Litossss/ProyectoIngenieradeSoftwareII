@@ -11,7 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-
+/** Pantalla 8 – Gestión de usuarios y roles (RF04). Solo administrador. */
 public class UsuariosController {
     @FXML private ToggleGroup grupoEstado;
     @FXML private TableView<Usuario> tabla;

@@ -25,7 +25,7 @@ import javafx.scene.layout.HBox;
 
 import java.util.List;
 
-
+/** Pantalla 3 – Inventario y consulta rápida de existencias (RF01 / RF05). */
 public class InventarioController {
     private static final int POR_PAGINA = 10;
 
@@ -98,7 +98,7 @@ public class InventarioController {
         }
     }
 
-
+    /** Miniatura del producto (o guion si no tiene foto). */
     private static class CeldaFoto extends TableCell<Producto, String> {
         private final ImageView vista = new ImageView();
         CeldaFoto() { vista.setFitWidth(38); vista.setFitHeight(38); vista.setPreserveRatio(true); setAlignment(Pos.CENTER); }
@@ -111,7 +111,7 @@ public class InventarioController {
         }
     }
 
-
+    /** Resalta en rojo el stock bajo (alerta). */
     private static class CeldaCantidad extends TableCell<Producto, String> {
         @Override protected void updateItem(String valor, boolean vacio) {
             super.updateItem(valor, vacio);

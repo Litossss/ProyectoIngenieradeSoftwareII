@@ -4,14 +4,14 @@ import com.repuestosanelisa.model.Rol;
 import com.repuestosanelisa.model.Usuario;
 import com.repuestosanelisa.util.NegocioException;
 
-
+/** Matriz de permisos (Pantalla 9). La interfaz oculta lo que no corresponde y los servicios lo vuelven a exigir. */
 public final class Permisos {
     private Permisos() {}
 
     public static boolean puede(Rol rol, Modulo m) {
         return switch (m) {
             case INICIO, INVENTARIO, VENTAS -> true;
-            case COMPRAS, REPORTES, USUARIOS -> rol == Rol.ADMINISTRADOR;
+            case COMPRAS, PROVEEDORES, REPORTES, USUARIOS -> rol == Rol.ADMINISTRADOR;
         };
     }
 

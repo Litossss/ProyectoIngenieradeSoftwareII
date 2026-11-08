@@ -2,7 +2,7 @@ package com.repuestosanelisa.service;
 
 import com.repuestosanelisa.model.Inventario;
 
-
+/** Crea una sola vez el inventario y los servicios (todos sobre MySQL), para que las pantallas compartan los mismos datos. */
 public final class Contexto {
     private static Contexto instancia;
 
@@ -29,6 +29,6 @@ public final class Contexto {
         return instancia;
     }
 
-
+    /** Solo para pruebas: fuerza a releer los datos. */
     public static synchronized void reiniciar() { instancia = null; }
 }

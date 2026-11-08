@@ -14,9 +14,9 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-
+/** Marco principal: menú lateral según el rol y zona donde se cargan las vistas. */
 public class MainController {
-    @FXML private ToggleButton btnInicio, btnInventario, btnVentas, btnCompras, btnReportes, btnUsuarios;
+    @FXML private ToggleButton btnInicio, btnInventario, btnVentas, btnCompras, btnProveedores, btnReportes, btnUsuarios;
     @FXML private Label lblTitulo, lblUsuario;
     @FXML private StackPane contenido;
 
@@ -29,6 +29,7 @@ public class MainController {
         ocultarSiNoPermitido(btnInventario, Modulo.INVENTARIO);
         ocultarSiNoPermitido(btnVentas, Modulo.VENTAS);
         ocultarSiNoPermitido(btnCompras, Modulo.COMPRAS);
+        ocultarSiNoPermitido(btnProveedores, Modulo.PROVEEDORES);
         ocultarSiNoPermitido(btnReportes, Modulo.REPORTES);
         ocultarSiNoPermitido(btnUsuarios, Modulo.USUARIOS);
         ir(Modulo.INICIO);
@@ -44,6 +45,7 @@ public class MainController {
     @FXML private void irInventario() { ir(Modulo.INVENTARIO); }
     @FXML private void irVentas()     { ir(Modulo.VENTAS); }
     @FXML private void irCompras()    { ir(Modulo.COMPRAS); }
+    @FXML private void irProveedores() { ir(Modulo.PROVEEDORES); }
     @FXML private void irReportes()   { ir(Modulo.REPORTES); }
     @FXML private void irUsuarios()   { ir(Modulo.USUARIOS); }
 
@@ -57,6 +59,7 @@ public class MainController {
             case INVENTARIO -> btnInventario;
             case VENTAS -> btnVentas;
             case COMPRAS -> btnCompras;
+            case PROVEEDORES -> btnProveedores;
             case REPORTES -> btnReportes;
             case USUARIOS -> btnUsuarios;
         };
@@ -66,6 +69,7 @@ public class MainController {
             case INVENTARIO -> "inventario";
             case VENTAS -> "ventas";
             case COMPRAS -> "compras";
+            case PROVEEDORES -> "proveedores";
             case REPORTES -> "reportes";
             case USUARIOS -> "usuarios";
         };
@@ -80,7 +84,12 @@ public class MainController {
 
     private Object cargar(String vista, String titulo) {
         try {
-            FXMLLoader loader = new FXMLLoader(App.class.getResource("view/" + vista + ".fxml"));
+            java.net.URL ubicacion = App.class.getResource("view/" + vista + ".fxml");
+            if (ubicacion == null) {
+                throw new IllegalStateException("No se encuentra el archivo " + vista + ".fxml en "
+                        + "src/main/resources/com/repuestosanelisa/view/. Cópielo ahí y vuelva a compilar.");
+            }
+            FXMLLoader loader = new FXMLLoader(ubicacion);
             Node nodo = loader.load();
             contenido.getChildren().setAll(nodo);
             lblTitulo.setText(titulo);

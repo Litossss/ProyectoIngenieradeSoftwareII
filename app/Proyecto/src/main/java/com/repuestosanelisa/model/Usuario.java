@@ -1,6 +1,6 @@
 package com.repuestosanelisa.model;
 
-
+/** Cuenta de acceso (RF04 / RF06). La contraseña se guarda solo como hash SHA-256. */
 public class Usuario {
     private String nombre;
     private final String usuario;

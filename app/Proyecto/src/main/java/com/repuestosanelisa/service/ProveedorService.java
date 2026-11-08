@@ -3,78 +3,105 @@ package com.repuestosanelisa.service;
 import com.repuestosanelisa.model.Proveedor;
 import com.repuestosanelisa.security.Modulo;
 import com.repuestosanelisa.security.Permisos;
-import com.repuestosanelisa.util.Config;
+import com.repuestosanelisa.util.Db;
 import com.repuestosanelisa.util.NegocioException;
-import com.repuestosanelisa.util.XmlUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Proveedores (solo Administrador) en la tabla proveedores de MySQL.
+ * Un proveedor no se borra: se DESACTIVA, así no aparece al comprar pero se conserva el historial.
+ */
 public class ProveedorService {
 
-    private final Path archivo = Config.DATA_DIR.resolve("proveedores.xml");
-    private final List<Proveedor> proveedores = new ArrayList<>();
-
-    public ProveedorService() {
-        if (Files.exists(archivo)) {
-            cargar();
-        } else if (Config.CARGAR_DATOS_DEMO) {
-            proveedores.addAll(DatosDemo.proveedores());
-            guardar();
-        }
-    }
-
+    /** Nombres de los proveedores ACTIVOS (para listas desplegables de compras y productos). */
     public List<String> nombres() {
-        return proveedores.stream().map(Proveedor::getNombre).sorted(String.CASE_INSENSITIVE_ORDER).toList();
+        return Db.consulta(c -> {
+            List<String> lista = new ArrayList<>();
+            try (PreparedStatement ps = c.prepareStatement("SELECT nombre FROM proveedores WHERE activo = 1 ORDER BY nombre");
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(rs.getString(1));
+            }
+            return lista;
+        });
     }
 
+    /** Todos los proveedores, activos e inactivos (pantalla Proveedores). */
+    public List<Proveedor> listar() {
+        Permisos.exigir(Modulo.PROVEEDORES);
+        return Db.consulta(c -> {
+            List<Proveedor> lista = new ArrayList<>();
+            try (PreparedStatement ps = c.prepareStatement(
+                    "SELECT nombre, contacto, activo FROM proveedores ORDER BY nombre");
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(new Proveedor(rs.getString(1), rs.getString(2), rs.getBoolean(3)));
+            }
+            return lista;
+        });
+    }
+
+    /** Existe con ese nombre (activo o no). */
     public boolean existe(String nombre) {
-        return proveedores.stream().anyMatch(p -> p.getNombre().equalsIgnoreCase(nombre));
+        return consultarExiste("SELECT 1 FROM proveedores WHERE nombre = ?", nombre);
+    }
+
+    /** Existe y está activo: solo a estos se les puede comprar. */
+    public boolean estaActivo(String nombre) {
+        return consultarExiste("SELECT 1 FROM proveedores WHERE nombre = ? AND activo = 1", nombre);
+    }
+
+    private boolean consultarExiste(String sql, String nombre) {
+        return Db.consulta(c -> {
+            try (PreparedStatement ps = c.prepareStatement(sql)) {
+                ps.setString(1, nombre);
+                try (ResultSet rs = ps.executeQuery()) { return rs.next(); }
+            }
+        });
     }
 
     public void registrar(String nombre, String contacto) {
-        Permisos.exigir(Modulo.COMPRAS);
+        Permisos.exigir(Modulo.PROVEEDORES);
         if (nombre == null || nombre.isBlank()) throw new NegocioException("Ingrese el nombre del proveedor");
         if (existe(nombre.trim())) throw new NegocioException("El proveedor ya está registrado");
-        Proveedor nuevo = new Proveedor(nombre.trim(), contacto == null ? "" : contacto.trim());
-        proveedores.add(nuevo);
-        try {
-            guardar();
-        } catch (NegocioException e) {
-            proveedores.remove(nuevo);
-            throw e;
-        }
+        Db.consulta(c -> {
+            try (PreparedStatement ps = c.prepareStatement("INSERT INTO proveedores (nombre, contacto) VALUES (?, ?)")) {
+                ps.setString(1, nombre.trim());
+                ps.setString(2, limpiar(contacto));
+                ps.executeUpdate();
+            }
+            return null;
+        });
     }
 
-    private void cargar() {
-        // <AQUÍ VA MYSQL> — SELECT nombre, contacto FROM proveedores
-        try {
-            Document d = XmlUtil.leer(archivo);
-            for (Element e : XmlUtil.hijos(d.getDocumentElement(), "proveedor")) {
-                proveedores.add(new Proveedor(XmlUtil.texto(e, "nombre"), XmlUtil.texto(e, "contacto")));
+    /** Cambia nombre, contacto y estado. Los productos y compras lo siguen por id, así que el historial no se rompe. */
+    public void editar(String nombreActual, String nuevoNombre, String contacto, boolean activo) {
+        Permisos.exigir(Modulo.PROVEEDORES);
+        if (nuevoNombre == null || nuevoNombre.isBlank()) throw new NegocioException("Ingrese el nombre del proveedor");
+        String nombre = nuevoNombre.trim();
+        Db.transaccion(c -> {
+            try (PreparedStatement ps = c.prepareStatement(
+                    "SELECT COUNT(*) FROM proveedores WHERE nombre = ? AND nombre <> ?")) {
+                ps.setString(1, nombre);
+                ps.setString(2, nombreActual);
+                try (ResultSet rs = ps.executeQuery()) {
+                    rs.next();
+                    if (rs.getInt(1) > 0) throw new NegocioException("Ya existe otro proveedor con ese nombre");
+                }
             }
-        } catch (Exception ex) {
-            throw new NegocioException("No se pudo leer proveedores.xml: " + ex.getMessage());
-        }
+            try (PreparedStatement ps = c.prepareStatement(
+                    "UPDATE proveedores SET nombre = ?, contacto = ?, activo = ? WHERE nombre = ?")) {
+                ps.setString(1, nombre);
+                ps.setString(2, limpiar(contacto));
+                ps.setBoolean(3, activo);
+                ps.setString(4, nombreActual);
+                if (ps.executeUpdate() == 0) throw new NegocioException("El proveedor ya no existe");
+            }
+            return null;
+        });
     }
 
-    private void guardar() {
-        // <AQUÍ VA MYSQL> — INSERT INTO proveedores (nombre, contacto) VALUES (?, ?)
-        try {
-            Document d = XmlUtil.nuevo("proveedores");
-            for (Proveedor p : proveedores) {
-                Element e = XmlUtil.agregar(d, d.getDocumentElement(), "proveedor", null);
-                XmlUtil.agregar(d, e, "nombre", p.getNombre());
-                XmlUtil.agregar(d, e, "contacto", p.getContacto());
-            }
-            XmlUtil.escribir(d, archivo);
-        } catch (Exception ex) {
-            throw new NegocioException("No se pudo guardar proveedores.xml: " + ex.getMessage());
-        }
-    }
+    private static String limpiar(String texto) { return texto == null ? "" : texto.trim(); }
 }

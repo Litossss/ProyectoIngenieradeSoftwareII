@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-
+<!-- Pantalla 3: Inventario y consulta rápida (RF05) -->
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.repuestosanelisa.controller.InventarioController" spacing="12" styleClass="vista">
 

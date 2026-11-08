@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-
+<!-- Pantalla 1: Inicio de sesión (RF06) -->
 <StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.repuestosanelisa.controller.LoginController"
            stylesheets="@styles.css" styleClass="fondo-login" prefWidth="560" prefHeight="640">

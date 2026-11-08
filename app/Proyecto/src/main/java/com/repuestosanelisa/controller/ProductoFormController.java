@@ -18,7 +18,7 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 
-
+/** Pantalla 4 – Formulario para registrar o editar un producto (RF01). */
 public class ProductoFormController {
     @FXML private TextField txtCodigo, txtNombre, txtCantidad, txtPrecio;
     @FXML private ComboBox<String> cmbCategoria, cmbProveedor;
@@ -37,6 +37,7 @@ public class ProductoFormController {
         cmbProveedor.getItems().addAll(Contexto.get().proveedores.nombres());
     }
 
+    /** null = nuevo producto; en otro caso se precargan los datos para editar. */
     public void iniciar(Producto p) {
         editando = p;
         if (p == null) return;

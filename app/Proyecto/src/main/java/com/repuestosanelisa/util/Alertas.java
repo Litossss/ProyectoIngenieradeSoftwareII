@@ -4,6 +4,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
@@ -14,7 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-
+/** Diálogos y mensajes reutilizables de JavaFX. */
 public final class Alertas {
     private Alertas() {}
 
@@ -39,7 +40,7 @@ public final class Alertas {
         return r.isPresent() && r.get() == ButtonType.OK;
     }
 
-
+    /** Muestra un comprobante y ofrece guardarlo como PDF. */
     public static void comprobante(Window owner, String titulo, String texto, String archivoSugerido) {
         TextArea area = new TextArea(texto);
         area.setEditable(false);
@@ -72,7 +73,7 @@ public final class Alertas {
         }
     }
 
-
+    /** Muestra el mensaje en la caja roja de error de la pantalla (como en los prototipos). */
     public static void mostrarError(Label caja, String mensaje) {
         caja.setText(mensaje);
         caja.setVisible(true);

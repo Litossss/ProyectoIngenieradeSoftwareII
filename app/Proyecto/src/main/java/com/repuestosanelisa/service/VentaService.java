@@ -7,38 +7,36 @@ import com.repuestosanelisa.model.Venta;
 import com.repuestosanelisa.security.Modulo;
 import com.repuestosanelisa.security.Permisos;
 import com.repuestosanelisa.security.Sesion;
-import com.repuestosanelisa.util.Config;
+import com.repuestosanelisa.util.Db;
 import com.repuestosanelisa.util.NegocioException;
-import com.repuestosanelisa.util.XmlUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-
+/**
+ * RF01/RF02 - salidas. La venta es UNA transacción en MySQL:
+ * INSERT venta + INSERT detalle + UPDATE de stock; si algo falla se hace rollback completo.
+ */
 public class VentaService {
 
-    private final Path archivo = Config.DATA_DIR.resolve("ventas.xml");
-    private final List<Venta> ventas = new ArrayList<>();
     private final Inventario inventario;
 
     public VentaService(Inventario inventario) {
         this.inventario = inventario;
-        if (Files.exists(archivo)) cargar();
-        else guardar();
     }
-
-    public List<Venta> listar() { return new ArrayList<>(ventas); }
 
     public Venta registrar(String cliente, List<LineaDetalle> lineas) {
         Permisos.exigir(Modulo.VENTAS);
         if (lineas.isEmpty()) throw new NegocioException("Agregue al menos un producto a la venta");
 
-        // Primero se valida todo; solo después se descuenta (la venta es todo o nada).
+        // Validación rápida con lo que se ve en pantalla (MySQL vuelve a comprobar el stock al descontar).
         for (LineaDetalle l : lineas) {
             Producto p = inventario.buscarProducto(l.getCodigo());
             if (p == null) throw new NegocioException("El producto " + l.getCodigo() + " ya no existe");
@@ -48,68 +46,94 @@ public class VentaService {
                         + ": solo hay " + p.getCantidad() + " unidades");
             }
         }
-        for (LineaDetalle l : lineas) {
-            Producto p = inventario.buscarProducto(l.getCodigo());
-            p.setCantidad(p.getCantidad() - l.getCantidad());
-        }
+
+        LocalDateTime fecha = LocalDateTime.now().withNano(0);
+        String clienteFinal = cliente == null ? "" : cliente.trim();
+        int id;
         try {
-            inventario.persistir();
+            id = Db.transaccion(c -> {
+                int usuarioId = usuarioId(c, Sesion.actual().getUsuario());
+                int ventaId;
+                try (PreparedStatement ps = c.prepareStatement(
+                        "INSERT INTO ventas (fecha, usuario_id, cliente) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                    ps.setTimestamp(1, Timestamp.valueOf(fecha));
+                    ps.setInt(2, usuarioId);
+                    ps.setString(3, clienteFinal);
+                    ps.executeUpdate();
+                    try (ResultSet k = ps.getGeneratedKeys()) { k.next(); ventaId = k.getInt(1); }
+                }
+                for (LineaDetalle l : lineas) {
+                    // Descuenta solo si todavía hay stock: protege contra ventas simultáneas.
+                    try (PreparedStatement ps = c.prepareStatement(
+                            "UPDATE productos SET cantidad = cantidad - ? WHERE codigo = ? AND cantidad >= ?")) {
+                        ps.setInt(1, l.getCantidad());
+                        ps.setString(2, l.getCodigo());
+                        ps.setInt(3, l.getCantidad());
+                        if (ps.executeUpdate() == 0) {
+                            throw new NegocioException("Stock insuficiente de " + l.getNombre()
+                                    + ": el inventario cambió, revise las existencias");
+                        }
+                    }
+                    try (PreparedStatement ps = c.prepareStatement(
+                            "INSERT INTO venta_detalle (venta_id, producto_id, codigo, nombre, cantidad, precio_unitario) "
+                                    + "VALUES (?, (SELECT id FROM productos WHERE codigo = ?), ?, ?, ?, ?)")) {
+                        ps.setInt(1, ventaId);
+                        ps.setString(2, l.getCodigo());
+                        ps.setString(3, l.getCodigo());
+                        ps.setString(4, l.getNombre());
+                        ps.setInt(5, l.getCantidad());
+                        ps.setDouble(6, l.getPrecioUnitario());
+                        ps.executeUpdate();
+                    }
+                }
+                return ventaId;
+            });
         } catch (NegocioException e) {
-            devolverStock(lineas);
+            inventario.recargar(); // el stock en pantalla pudo quedar desactualizado
             throw e;
         }
 
-        Venta v = new Venta(ventas.stream().mapToInt(Venta::getId).max().orElse(0) + 1,
-                LocalDateTime.now(), Sesion.actual().getNombre(),
-                cliente == null ? "" : cliente.trim(), new ArrayList<>(lineas));
-        ventas.add(v);
-        try {
-            guardar();
-        } catch (NegocioException e) {
-            ventas.remove(v);
-            devolverStock(lineas);
-            try { inventario.persistir(); } catch (NegocioException ignorada) { /* se informa el error original */ }
-            throw e;
-        }
-        return v;
-    }
-
-    private void devolverStock(List<LineaDetalle> lineas) {
+        // Ya confirmado en MySQL: se refleja en la lista en memoria.
         for (LineaDetalle l : lineas) {
             Producto p = inventario.buscarProducto(l.getCodigo());
-            if (p != null) p.setCantidad(p.getCantidad() + l.getCantidad());
+            if (p != null) p.setCantidad(p.getCantidad() - l.getCantidad());
         }
+        return new Venta(id, fecha, Sesion.actual().getNombre(), clienteFinal, new ArrayList<>(lineas));
     }
 
-    private void cargar() {
-        // <AQUÍ VA MYSQL> — SELECT ventas y su detalle
-        try {
-            Document d = XmlUtil.leer(archivo);
-            for (Element e : XmlUtil.hijos(d.getDocumentElement(), "venta")) {
-                ventas.add(new Venta(Integer.parseInt(XmlUtil.texto(e, "id")),
-                        LocalDateTime.parse(XmlUtil.texto(e, "fecha")), XmlUtil.texto(e, "usuario"),
-                        XmlUtil.texto(e, "cliente"), XmlUtil.leerLineas(e)));
+    public List<Venta> listar() {
+        return Db.consulta(c -> {
+            Map<Integer, List<LineaDetalle>> detalle = new HashMap<>();
+            try (PreparedStatement ps = c.prepareStatement(
+                    "SELECT venta_id, codigo, nombre, cantidad, precio_unitario FROM venta_detalle ORDER BY venta_id, id");
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    detalle.computeIfAbsent(rs.getInt(1), k -> new ArrayList<>())
+                            .add(new LineaDetalle(rs.getString(2), rs.getString(3), rs.getInt(4), rs.getDouble(5)));
+                }
             }
-        } catch (Exception ex) {
-            throw new NegocioException("No se pudo leer ventas.xml: " + ex.getMessage());
-        }
+            List<Venta> ventas = new ArrayList<>();
+            try (PreparedStatement ps = c.prepareStatement(
+                    "SELECT v.id, v.fecha, u.nombre, v.cliente FROM ventas v "
+                            + "JOIN usuarios u ON u.id = v.usuario_id ORDER BY v.id");
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt(1);
+                    ventas.add(new Venta(id, rs.getTimestamp(2).toLocalDateTime(), rs.getString(3), rs.getString(4),
+                            detalle.getOrDefault(id, new ArrayList<>())));
+                }
+            }
+            return ventas;
+        });
     }
 
-    private void guardar() {
-        // <AQUÍ VA MYSQL> — INSERT INTO ventas / detalle_venta
-        try {
-            Document d = XmlUtil.nuevo("ventas");
-            for (Venta v : ventas) {
-                Element e = XmlUtil.agregar(d, d.getDocumentElement(), "venta", null);
-                XmlUtil.agregar(d, e, "id", String.valueOf(v.getId()));
-                XmlUtil.agregar(d, e, "fecha", v.getFecha().toString());
-                XmlUtil.agregar(d, e, "usuario", v.getUsuario());
-                XmlUtil.agregar(d, e, "cliente", v.getCliente());
-                XmlUtil.escribirLineas(d, e, v.getLineas());
+    static int usuarioId(java.sql.Connection c, String usuario) throws java.sql.SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT id FROM usuarios WHERE usuario = ?")) {
+            ps.setString(1, usuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) throw new NegocioException("El usuario de la sesión ya no existe");
+                return rs.getInt(1);
             }
-            XmlUtil.escribir(d, archivo);
-        } catch (Exception ex) {
-            throw new NegocioException("No se pudo guardar ventas.xml: " + ex.getMessage());
         }
     }
 }

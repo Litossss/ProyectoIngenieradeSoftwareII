@@ -10,7 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-
+/** Pantalla 1 – Autenticación (RF06). */
 public class LoginController {
     @FXML private TextField usuarioField;
     @FXML private PasswordField contrasenaField;

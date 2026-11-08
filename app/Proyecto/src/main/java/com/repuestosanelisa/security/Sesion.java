@@ -2,7 +2,7 @@ package com.repuestosanelisa.security;
 
 import com.repuestosanelisa.model.Usuario;
 
-
+/** Usuario autenticado actualmente. */
 public final class Sesion {
     private static Usuario actual;
     private Sesion() {}

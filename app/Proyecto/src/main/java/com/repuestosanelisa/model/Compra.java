@@ -3,7 +3,7 @@ package com.repuestosanelisa.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
+/** Entrada de inventario (compra a proveedor). */
 public class Compra {
     private int id;
     private final LocalDateTime fecha;

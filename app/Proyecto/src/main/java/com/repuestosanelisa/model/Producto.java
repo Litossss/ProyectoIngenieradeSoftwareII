@@ -10,7 +10,7 @@ public class Producto {
     private String descripcion;
     private String foto; // archivo dentro de app-data/fotos ("" si no tiene)
 
-
+    /** Constructor corto que ya usabas. */
     public Producto(String codigo, String nombre, int cantidad, double precio) {
         this(codigo, nombre, "", cantidad, precio, "", "", "");
     }

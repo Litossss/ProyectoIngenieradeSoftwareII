@@ -11,7 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
-
+/** Existencias del almacén: lista en memoria + persistencia en MySQL mediante InventarioService. */
 public class Inventario {
 
     public static final String TODAS = "Todas";
@@ -21,18 +21,19 @@ public class Inventario {
 
     public Inventario() {
         servicio = new InventarioService();
-        try {
-            productos.addAll(servicio.cargarProductos());
-        } catch (Exception e) {
-            throw new NegocioException("No se pudo cargar el inventario desde XML: " + e.getMessage());
-        }
+        recargar();
+    }
+
+    /** Vuelve a leer los productos desde MySQL (por si el stock cambió fuera de esta ventana). */
+    public void recargar() {
+        productos.setAll(servicio.cargarProductos());
     }
 
     public ObservableList<Producto> getProductos() {
         return FXCollections.unmodifiableObservableList(productos);
     }
 
-
+    /** RF05: busca por nombre, código o categoría y opcionalmente filtra por categoría. */
     public List<Producto> buscar(String texto, String categoria) {
         String t = texto == null ? "" : texto.trim().toLowerCase();
         boolean todas = categoria == null || categoria.isBlank() || categoria.equals(TODAS);
@@ -62,66 +63,36 @@ public class Inventario {
         if (buscarProducto(producto.getCodigo()) != null) {
             throw new NegocioException("El código '" + producto.getCodigo() + "' ya existe");
         }
+        servicio.insertar(producto);          // primero MySQL; si falla, la lista no cambia
         productos.add(producto);
-        try {
-            persistir();
-        } catch (NegocioException e) {
-            productos.remove(producto);
-            throw e;
-        }
     }
 
-
+    /** El código no cambia. La foto solo se reemplaza si viene una nueva. */
     public void actualizarProducto(Producto datos) {
         Permisos.exigir(Modulo.INVENTARIO);
         validar(datos);
         Producto p = buscarProducto(datos.getCodigo());
         if (p == null) throw new NegocioException("El producto no existe en el inventario");
 
-        Producto copia = new Producto(p.getCodigo(), p.getNombre(), p.getCategoria(), p.getCantidad(),
-                p.getPrecio(), p.getProveedor(), p.getDescripcion(), p.getFoto());
-        p.setNombre(datos.getNombre());
-        p.setCategoria(datos.getCategoria());
-        p.setCantidad(datos.getCantidad());
-        p.setPrecio(datos.getPrecio());
-        p.setProveedor(datos.getProveedor());
-        p.setDescripcion(datos.getDescripcion());
-        if (!datos.getFoto().isBlank()) p.setFoto(datos.getFoto());
-        try {
-            persistir();
-        } catch (NegocioException e) {
-            p.setNombre(copia.getNombre());
-            p.setCategoria(copia.getCategoria());
-            p.setCantidad(copia.getCantidad());
-            p.setPrecio(copia.getPrecio());
-            p.setProveedor(copia.getProveedor());
-            p.setDescripcion(copia.getDescripcion());
-            p.setFoto(copia.getFoto());
-            throw e;
-        }
+        String foto = datos.getFoto().isBlank() ? p.getFoto() : datos.getFoto();
+        Producto nuevo = new Producto(p.getCodigo(), datos.getNombre(), datos.getCategoria(), datos.getCantidad(),
+                datos.getPrecio(), datos.getProveedor(), datos.getDescripcion(), foto);
+        servicio.actualizar(nuevo);           // primero MySQL; si falla, el producto no cambia
+        p.setNombre(nuevo.getNombre());
+        p.setCategoria(nuevo.getCategoria());
+        p.setCantidad(nuevo.getCantidad());
+        p.setPrecio(nuevo.getPrecio());
+        p.setProveedor(nuevo.getProveedor());
+        p.setDescripcion(nuevo.getDescripcion());
+        p.setFoto(nuevo.getFoto());
     }
 
-
+    /** Solo el Administrador elimina productos. */
     public void eliminarProducto(Producto producto) {
         Permisos.exigirAdmin();
         if (producto == null || !productos.contains(producto)) return;
-        int indice = productos.indexOf(producto);
+        servicio.eliminar(producto.getCodigo());
         productos.remove(producto);
-        try {
-            persistir();
-        } catch (NegocioException e) {
-            productos.add(indice, producto);
-            throw e;
-        }
-    }
-
-
-    public void persistir() {
-        try {
-            servicio.guardarProductos(List.copyOf(productos));
-        } catch (Exception e) {
-            throw new NegocioException("No se pudo guardar el inventario en XML: " + e.getMessage());
-        }
     }
 
     private void validar(Producto p) {

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-
+<!-- Marco principal (Pantallas 2 a 9): menú lateral por rol + encabezado + zona de contenido -->
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.repuestosanelisa.controller.MainController"
             stylesheets="@styles.css" prefWidth="1180" prefHeight="720">
@@ -35,6 +35,7 @@
                 <ToggleButton fx:id="btnInventario" text="Inventario" toggleGroup="$grupoMenu" onAction="#irInventario" styleClass="nav-btn" maxWidth="Infinity"/>
                 <ToggleButton fx:id="btnVentas" text="Ventas" toggleGroup="$grupoMenu" onAction="#irVentas" styleClass="nav-btn" maxWidth="Infinity"/>
                 <ToggleButton fx:id="btnCompras" text="Compras" toggleGroup="$grupoMenu" onAction="#irCompras" styleClass="nav-btn" maxWidth="Infinity"/>
+                <ToggleButton fx:id="btnProveedores" text="Proveedores" toggleGroup="$grupoMenu" onAction="#irProveedores" styleClass="nav-btn" maxWidth="Infinity"/>
                 <ToggleButton fx:id="btnReportes" text="Reportes" toggleGroup="$grupoMenu" onAction="#irReportes" styleClass="nav-btn" maxWidth="Infinity"/>
                 <ToggleButton fx:id="btnUsuarios" text="Usuarios" toggleGroup="$grupoMenu" onAction="#irUsuarios" styleClass="nav-btn" maxWidth="Infinity"/>
             </VBox>

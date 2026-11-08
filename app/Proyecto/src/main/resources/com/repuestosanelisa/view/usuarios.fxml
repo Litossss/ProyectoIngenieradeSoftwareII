@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
+<!-- Pantalla 8: Gestión de usuarios (RF04) — solo Administrador -->
 <HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.repuestosanelisa.controller.UsuariosController" spacing="18" styleClass="vista">
 

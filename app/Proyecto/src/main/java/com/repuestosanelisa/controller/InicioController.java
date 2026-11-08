@@ -14,7 +14,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
 
-
+/** Pantalla 2 – Panel principal con indicadores y accesos rápidos. */
 public class InicioController {
     @FXML private Label lblProductos, lblPocoStock, lblVentasHoy, lblComprasMes;
     @FXML private VBox cardCompras, boxReporte;

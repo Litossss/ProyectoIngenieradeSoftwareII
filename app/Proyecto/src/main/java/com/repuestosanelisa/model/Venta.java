@@ -3,7 +3,7 @@ package com.repuestosanelisa.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
+/** Salida de inventario (venta a cliente). */
 public class Venta {
     private int id;
     private final LocalDateTime fecha;

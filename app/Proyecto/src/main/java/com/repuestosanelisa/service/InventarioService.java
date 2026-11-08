@@ -1,59 +1,80 @@
 package com.repuestosanelisa.service;
 
 import com.repuestosanelisa.model.Producto;
-import com.repuestosanelisa.util.Config;
-import com.repuestosanelisa.util.XmlUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import com.repuestosanelisa.util.Db;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/** Persistencia de productos (RF01, RF05) en la tabla productos de MySQL. */
 public class InventarioService {
 
-    private final Path archivo = Config.DATA_DIR.resolve("productos.xml");
-
-    public List<Producto> cargarProductos() throws Exception {
-        List<Producto> productos = new ArrayList<>();
-
-        // <AQUÍ VA MYSQL> — SELECT codigo, nombre, categoria, cantidad, precio, proveedor, descripcion, foto FROM productos
-        if (Files.notExists(archivo)) {
-            if (Config.CARGAR_DATOS_DEMO) productos.addAll(DatosDemo.productos());
-            return productos;
-        }
-
-        Document documento = XmlUtil.leer(archivo);
-        for (Element e : XmlUtil.hijos(documento.getDocumentElement(), "producto")) {
-            int cantidad = Integer.parseInt(XmlUtil.texto(e, "cantidad"));
-            double precio = Double.parseDouble(XmlUtil.texto(e, "precio"));
-            if (cantidad < 0 || precio < 0) throw new IOException("Hay cantidades o precios negativos en el XML.");
-            // Categoría, proveedor, descripción y foto son opcionales: el XML de la v0.1 sigue cargando.
-            productos.add(new Producto(XmlUtil.texto(e, "codigo"), XmlUtil.texto(e, "nombre"),
-                    XmlUtil.texto(e, "categoria"), cantidad, precio, XmlUtil.texto(e, "proveedor"),
-                    XmlUtil.texto(e, "descripcion"), XmlUtil.texto(e, "foto")));
-        }
-        return productos;
+    public List<Producto> cargarProductos() {
+        return Db.consulta(c -> {
+            List<Producto> lista = new ArrayList<>();
+            try (PreparedStatement ps = c.prepareStatement(
+                    "SELECT p.codigo, p.nombre, p.categoria, p.cantidad, p.precio, "
+                            + "COALESCE(pr.nombre, ''), COALESCE(p.descripcion, ''), p.foto "
+                            + "FROM productos p LEFT JOIN proveedores pr ON pr.id = p.proveedor_id "
+                            + "ORDER BY p.codigo");
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(new Producto(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4),
+                            rs.getDouble(5), rs.getString(6), rs.getString(7), rs.getString(8)));
+                }
+            }
+            return lista;
+        });
     }
 
-    public void guardarProductos(List<Producto> productos) throws Exception {
-        // <AQUÍ VA MYSQL> — INSERT / UPDATE / DELETE de productos dentro de una transacción
-        Document documento = XmlUtil.nuevo("inventario");
-        Element raiz = documento.getDocumentElement();
-        for (Producto p : productos) {
-            Element e = XmlUtil.agregar(documento, raiz, "producto", null);
-            XmlUtil.agregar(documento, e, "codigo", p.getCodigo());
-            XmlUtil.agregar(documento, e, "nombre", p.getNombre());
-            XmlUtil.agregar(documento, e, "categoria", p.getCategoria());
-            XmlUtil.agregar(documento, e, "cantidad", String.valueOf(p.getCantidad()));
-            XmlUtil.agregar(documento, e, "precio", String.valueOf(p.getPrecio()));
-            XmlUtil.agregar(documento, e, "proveedor", p.getProveedor());
-            XmlUtil.agregar(documento, e, "descripcion", p.getDescripcion());
-            XmlUtil.agregar(documento, e, "foto", p.getFoto());
-        }
-        XmlUtil.escribir(documento, archivo);
+    public void insertar(Producto p) {
+        Db.consulta(c -> {
+            try (PreparedStatement ps = c.prepareStatement(
+                    "INSERT INTO productos (codigo, nombre, categoria, cantidad, precio, proveedor_id, descripcion, foto) "
+                            + "VALUES (?, ?, ?, ?, ?, (SELECT id FROM proveedores WHERE nombre = ?), ?, ?)")) {
+                ps.setString(1, p.getCodigo());
+                ps.setString(2, p.getNombre());
+                ps.setString(3, p.getCategoria());
+                ps.setInt(4, p.getCantidad());
+                ps.setDouble(5, p.getPrecio());
+                ps.setString(6, p.getProveedor());
+                ps.setString(7, p.getDescripcion());
+                ps.setString(8, p.getFoto());
+                ps.executeUpdate();
+            }
+            return null;
+        });
+    }
+
+    public void actualizar(Producto p) {
+        Db.consulta(c -> {
+            try (PreparedStatement ps = c.prepareStatement(
+                    "UPDATE productos SET nombre = ?, categoria = ?, cantidad = ?, precio = ?, "
+                            + "proveedor_id = (SELECT id FROM proveedores WHERE nombre = ?), descripcion = ?, foto = ? "
+                            + "WHERE codigo = ?")) {
+                ps.setString(1, p.getNombre());
+                ps.setString(2, p.getCategoria());
+                ps.setInt(3, p.getCantidad());
+                ps.setDouble(4, p.getPrecio());
+                ps.setString(5, p.getProveedor());
+                ps.setString(6, p.getDescripcion());
+                ps.setString(7, p.getFoto());
+                ps.setString(8, p.getCodigo());
+                ps.executeUpdate();
+            }
+            return null;
+        });
+    }
+
+    public void eliminar(String codigo) {
+        Db.consulta(c -> {
+            try (PreparedStatement ps = c.prepareStatement("DELETE FROM productos WHERE codigo = ?")) {
+                ps.setString(1, codigo);
+                ps.executeUpdate();
+            }
+            return null;
+        });
     }
 }
