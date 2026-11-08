@@ -16,7 +16,7 @@
             <Label text="Productos registrados" styleClass="kpi-titulo"/>
             <Label fx:id="lblProductos" text="-" styleClass="kpi-valor"/>
         </VBox>
-        <VBox styleClass="kpi-card" spacing="10" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+        <VBox styleClass="kpi-card, kpi-alerta" spacing="10" HBox.hgrow="ALWAYS" maxWidth="Infinity">
             <Label text="Productos con poco stock" styleClass="kpi-titulo"/>
             <Label fx:id="lblPocoStock" text="-" styleClass="kpi-valor"/>
         </VBox>
@@ -62,7 +62,6 @@
         <Button text="CONSULTAR INVENTARIO" onAction="#consultarInventario" styleClass="btn-secondary" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="46"/>
         <VBox fx:id="boxReporte" spacing="3" HBox.hgrow="ALWAYS" maxWidth="Infinity">
             <Button text="GENERAR REPORTE" onAction="#generarReporte" styleClass="btn-secondary" maxWidth="Infinity" prefHeight="46"/>
-            <Label text="(solo Administrador)" styleClass="nota"/>
         </VBox>
     </HBox>
 </VBox>

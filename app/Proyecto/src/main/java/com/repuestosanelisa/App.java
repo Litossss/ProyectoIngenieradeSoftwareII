@@ -26,6 +26,8 @@ public class App extends Application {
             return;
         }
         stage.setTitle("Repuestos Anelisa – Control de Inventario");
+        var icono = App.class.getResourceAsStream("images/logo.jpg");
+        if (icono != null) stage.getIcons().add(new javafx.scene.image.Image(icono));
         mostrarLogin(stage);
         stage.show();
     }

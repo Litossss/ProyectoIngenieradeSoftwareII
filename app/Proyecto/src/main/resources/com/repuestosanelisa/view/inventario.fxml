@@ -48,7 +48,5 @@
         <Label fx:id="lblPagina" styleClass="etiqueta"/>
         <Button fx:id="btnSiguiente" text="&gt;" onAction="#paginaSiguiente" styleClass="btn-secondary"/>
     </HBox>
-
-    <Label styleClass="info-box" wrapText="true" maxWidth="Infinity"
-           text="Si no hay coincidencias: &quot;No se encontraron productos&quot;. Una fila con cantidad 0 o baja se resalta como alerta de stock."/>
+    
 </VBox>

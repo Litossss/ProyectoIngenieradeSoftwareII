@@ -22,10 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * RF01/RF02 - entradas (solo Administrador). La compra es UNA transacción en MySQL:
- * INSERT compra + INSERT detalle + UPDATE de stock; si algo falla se hace rollback completo.
- */
+
 public class CompraService {
 
     private final Inventario inventario;

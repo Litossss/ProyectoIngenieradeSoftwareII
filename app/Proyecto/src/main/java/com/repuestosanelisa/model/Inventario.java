@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
-/** Existencias del almacén: lista en memoria + persistencia en MySQL mediante InventarioService. */
 public class Inventario {
 
     public static final String TODAS = "Todas";
@@ -24,7 +23,6 @@ public class Inventario {
         recargar();
     }
 
-    /** Vuelve a leer los productos desde MySQL (por si el stock cambió fuera de esta ventana). */
     public void recargar() {
         productos.setAll(servicio.cargarProductos());
     }
@@ -33,7 +31,6 @@ public class Inventario {
         return FXCollections.unmodifiableObservableList(productos);
     }
 
-    /** RF05: busca por nombre, código o categoría y opcionalmente filtra por categoría. */
     public List<Producto> buscar(String texto, String categoria) {
         String t = texto == null ? "" : texto.trim().toLowerCase();
         boolean todas = categoria == null || categoria.isBlank() || categoria.equals(TODAS);
@@ -67,7 +64,6 @@ public class Inventario {
         productos.add(producto);
     }
 
-    /** El código no cambia. La foto solo se reemplaza si viene una nueva. */
     public void actualizarProducto(Producto datos) {
         Permisos.exigir(Modulo.INVENTARIO);
         validar(datos);
@@ -87,7 +83,6 @@ public class Inventario {
         p.setFoto(nuevo.getFoto());
     }
 
-    /** Solo el Administrador elimina productos. */
     public void eliminarProducto(Producto producto) {
         Permisos.exigirAdmin();
         if (producto == null || !productos.contains(producto)) return;

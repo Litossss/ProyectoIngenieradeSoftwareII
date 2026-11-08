@@ -10,7 +10,6 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-/** Gestión de proveedores: crear, editar y activar / desactivar (solo Administrador). */
 public class ProveedoresController {
     @FXML private ToggleGroup grupoEstado;
     @FXML private TableView<Proveedor> tabla;

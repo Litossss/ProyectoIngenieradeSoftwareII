@@ -5,6 +5,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -16,8 +19,10 @@
     <VBox alignment="CENTER" spacing="10" styleClass="card" maxWidth="400" maxHeight="-Infinity">
         <padding><Insets top="28" right="36" bottom="28" left="36"/></padding>
 
-        <StackPane styleClass="logo-box" prefWidth="160" prefHeight="76" minHeight="76" maxWidth="160" maxHeight="76">
-            <Label text="[ LOGO ]" style="-fx-text-fill: #52606d;"/>
+        <StackPane styleClass="logo-box" maxWidth="130" maxHeight="130">
+            <ImageView fitWidth="118" fitHeight="118" preserveRatio="true" smooth="true">
+                <image><Image url="/images/logo.jpg"/></image>
+            </ImageView>
         </StackPane>
 
         <Label text="Repuestos Anelisa" styleClass="titulo-login"/>
@@ -36,7 +41,7 @@
 
         <Label fx:id="lblError" styleClass="error-box" visible="false" managed="false" wrapText="true" maxWidth="Infinity"/>
 
-        <Label text="Prototipo — Administrador: anelisa / admin123   Empleado: empleado1 / emp123"
+        <Label text="Administrador: anelisa / admin123 - Empleado: empleado1 / emp123"
                styleClass="nota" wrapText="true"/>
     </VBox>
 </StackPane>

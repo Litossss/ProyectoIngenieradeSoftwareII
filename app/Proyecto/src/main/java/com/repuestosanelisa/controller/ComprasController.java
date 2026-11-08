@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
-/** Pantalla 6 – Registro de compras a proveedor / entradas (RF02). Solo administrador. */
+/** Registro de compras a proveedor Solo administrador. */
 public class ComprasController {
     @FXML private ComboBox<String> cmbProveedor;
     @FXML private DatePicker dpFecha;

@@ -25,7 +25,7 @@ import javafx.scene.layout.HBox;
 
 import java.util.List;
 
-/** Pantalla 3 – Inventario y consulta rápida de existencias (RF01 / RF05). */
+/** Inventario  */
 public class InventarioController {
     private static final int POR_PAGINA = 10;
 

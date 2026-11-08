@@ -30,8 +30,6 @@
             <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
         </TableView>
 
-        <Label styleClass="info-box" wrapText="true" maxWidth="Infinity"
-               text="Un proveedor no se elimina: se desactiva. Así no aparece al registrar compras ni en el formulario de productos, pero se conserva su historial."/>
     </VBox>
 
     <VBox styleClass="card" spacing="8" prefWidth="310" minWidth="310" maxWidth="310">

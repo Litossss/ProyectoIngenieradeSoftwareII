@@ -25,3 +25,10 @@
 ## V1.1
 - Agregar la pantalla Proveedores (Se nos olvido) con botón en el menú: crear, editar nombre y contacto, y activar o desactivar.
 - Agregar el módulo `PROVEEDORES` a la matriz de permisos.
+
+## V1.2
+- Rediseño visual con la paleta de los prototipos a color: gris oscuro #3E434A, índigo #302C9B, amarillo #ECAB0F, fondo #F3F4F5.
+- Logo minimalista de Auto Repuestos Anelisa en el inicio de sesión, el menú lateral y el icono de la ventana (carpeta `resources/.../images`).
+- Nuevo `styles.css`: menú lateral oscuro con botones de borde amarillo, tarjetas con borde superior, tablas con encabezado gris y filas alternadas lavanda, alertas de poco stock en tono crema, botones primarios índigo y botón "Salir" amarillo.
+- Sin cambios de lógica ni de base de datos.
+

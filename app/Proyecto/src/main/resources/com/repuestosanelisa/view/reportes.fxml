@@ -42,14 +42,12 @@
 
         <Button text="GENERAR PDF" onAction="#generar" styleClass="btn-primary" maxWidth="Infinity"/>
         <Label fx:id="lblError" styleClass="error-box" visible="false" managed="false" wrapText="true" maxWidth="Infinity"/>
-        <Label text="El reporte de inventario no usa rango de fechas." styleClass="nota" wrapText="true"/>
     </VBox>
 
     <VBox spacing="8" HBox.hgrow="ALWAYS" maxWidth="Infinity">
         <Label text="Vista previa del reporte" styleClass="seccion"/>
         <TextArea fx:id="areaVista" editable="false" VBox.vgrow="ALWAYS"
-                  style="-fx-font-family: 'Monospaced'; -fx-font-size: 12px;"
-                  promptText="Aquí aparecerá la vista previa del reporte..."/>
+                  style="-fx-font-family: 'Monospaced'; -fx-font-size: 12px;"/>
         <HBox spacing="10">
             <Button text="Imprimir" onAction="#imprimir" styleClass="btn-secondary" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
             <Button text="Guardar PDF" onAction="#guardarPdf" styleClass="btn-secondary" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>

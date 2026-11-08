@@ -25,7 +25,6 @@ import javafx.util.converter.IntegerStringConverter;
 
 import java.time.LocalDateTime;
 
-/** Pantalla 5 – Registro de ventas / salidas de inventario (RF02). */
 public class VentasController {
     @FXML private TextField txtBuscar, txtCliente;
     @FXML private TableView<Producto> tablaProductos;

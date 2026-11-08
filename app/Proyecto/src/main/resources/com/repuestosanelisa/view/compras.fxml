@@ -57,7 +57,6 @@
     </HBox>
 
     <HBox spacing="12" alignment="CENTER_LEFT">
-        <Label text="Al confirmar se aumentan las existencias y se genera el comprobante." styleClass="nota"/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button text="CANCELAR" onAction="#cancelar" styleClass="btn-secondary" minWidth="150"/>
         <Button text="REGISTRAR COMPRA" onAction="#registrar" styleClass="btn-primary" minWidth="190"/>

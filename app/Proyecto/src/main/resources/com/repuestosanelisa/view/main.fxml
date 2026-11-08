@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -22,9 +24,11 @@
         <VBox styleClass="sidebar" prefWidth="200" minWidth="200" spacing="8">
             <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
 
-            <StackPane styleClass="logo-box" prefHeight="76" minHeight="76">
-                <VBox alignment="CENTER" spacing="6">
-                    <Label text="[ LOGO ]" style="-fx-text-fill: #52606d; -fx-font-size: 11px;"/>
+            <StackPane styleClass="logo-card" minHeight="132">
+                <VBox alignment="CENTER" spacing="4">
+                    <ImageView fitWidth="96" fitHeight="96" preserveRatio="true" smooth="true">
+                        <image><Image url="/images/logo.jpg"/></image>
+                    </ImageView>
                     <Label text="Repuestos Anelisa" styleClass="logo-nombre"/>
                 </VBox>
             </StackPane>
@@ -41,16 +45,17 @@
             </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>
-            <Label text="v1.0" styleClass="version"/>
+            <Label text="v1.2" styleClass="version"/>
         </VBox>
     </left>
 
     <top>
         <HBox styleClass="header" alignment="CENTER_LEFT" spacing="12">
+            <Region styleClass="marca-titulo" prefWidth="9" minWidth="9" prefHeight="22"/>
             <Label fx:id="lblTitulo" text="Inicio" styleClass="titulo-vista"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="lblUsuario" styleClass="chip-usuario"/>
-            <Button text="Salir" onAction="#salir" styleClass="btn-secondary"/>
+            <Button text="Salir" onAction="#salir" styleClass="btn-salir"/>
         </HBox>
     </top>
 

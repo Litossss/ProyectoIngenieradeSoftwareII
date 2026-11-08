@@ -33,8 +33,6 @@
         <TextField fx:id="txtCliente" promptText="Nombre del cliente"/>
         <Label fx:id="lblUsuario" styleClass="nota"/>
         <Label fx:id="lblFecha" styleClass="nota"/>
-        <Label text="Al confirmar: se descuenta el stock y se genera el comprobante de venta"
-               styleClass="info-box" maxWidth="Infinity" wrapText="true"/>
     </VBox>
 
     <VBox spacing="8" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="480">
@@ -49,7 +47,6 @@
             </columns>
             <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
         </TableView>
-        <Label text="Tip: haz doble clic en la cantidad para cambiarla." styleClass="nota"/>
 
         <HBox styleClass="total-box" alignment="CENTER_LEFT">
             <Label text="TOTAL:"/>

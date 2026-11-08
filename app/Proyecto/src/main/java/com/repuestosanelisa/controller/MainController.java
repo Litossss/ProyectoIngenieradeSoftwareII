@@ -14,7 +14,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-/** Marco principal: menú lateral según el rol y zona donde se cargan las vistas. */
+/** Marco  */
 public class MainController {
     @FXML private ToggleButton btnInicio, btnInventario, btnVentas, btnCompras, btnProveedores, btnReportes, btnUsuarios;
     @FXML private Label lblTitulo, lblUsuario;
