@@ -6,7 +6,6 @@ import com.repuestosanelisa.model.Venta;
 
 import java.util.List;
 
-/** Texto de los comprobantes (se muestra en pantalla y se guarda como PDF). */
 public final class Comprobante {
     private Comprobante() {}
 

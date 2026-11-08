@@ -11,13 +11,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Proveedores (solo Administrador) en la tabla proveedores de MySQL.
- * Un proveedor no se borra: se DESACTIVA, así no aparece al comprar pero se conserva el historial.
- */
+
 public class ProveedorService {
 
-    /** Nombres de los proveedores ACTIVOS (para listas desplegables de compras y productos). */
     public List<String> nombres() {
         return Db.consulta(c -> {
             List<String> lista = new ArrayList<>();
@@ -29,7 +25,6 @@ public class ProveedorService {
         });
     }
 
-    /** Todos los proveedores, activos e inactivos (pantalla Proveedores). */
     public List<Proveedor> listar() {
         Permisos.exigir(Modulo.PROVEEDORES);
         return Db.consulta(c -> {
@@ -43,12 +38,10 @@ public class ProveedorService {
         });
     }
 
-    /** Existe con ese nombre (activo o no). */
     public boolean existe(String nombre) {
         return consultarExiste("SELECT 1 FROM proveedores WHERE nombre = ?", nombre);
     }
 
-    /** Existe y está activo: solo a estos se les puede comprar. */
     public boolean estaActivo(String nombre) {
         return consultarExiste("SELECT 1 FROM proveedores WHERE nombre = ? AND activo = 1", nombre);
     }
@@ -76,7 +69,6 @@ public class ProveedorService {
         });
     }
 
-    /** Cambia nombre, contacto y estado. Los productos y compras lo siguen por id, así que el historial no se rompe. */
     public void editar(String nombreActual, String nuevoNombre, String contacto, boolean activo) {
         Permisos.exigir(Modulo.PROVEEDORES);
         if (nuevoNombre == null || nuevoNombre.isBlank()) throw new NegocioException("Ingrese el nombre del proveedor");

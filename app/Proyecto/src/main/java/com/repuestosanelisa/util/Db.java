@@ -4,10 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- * Acceso a MySQL por JDBC. Toda consulta pasa por aquí: abre la conexión, la cierra
- * y convierte los errores SQL en NegocioException con un mensaje entendible.
- */
+
 public final class Db {
     private Db() {}
 
@@ -20,12 +17,10 @@ public final class Db {
         return DriverManager.getConnection(Config.DB_URL, Config.DB_USER, Config.DB_PASSWORD);
     }
 
-    /** Comprueba la conexión al iniciar la aplicación. */
     public static void verificar() {
         consulta(c -> c.isValid(5));
     }
 
-    /** Ejecuta una o varias lecturas / escrituras sueltas (cada sentencia se confirma sola). */
     public static <T> T consulta(Trabajo<T> trabajo) {
         try (Connection c = abrir()) {
             return trabajo.ejecutar(c);

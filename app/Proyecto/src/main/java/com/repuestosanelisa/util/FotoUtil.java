@@ -9,13 +9,11 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
-/** Fotografías de referencia de los productos: se copian a app-data/fotos/. */
 public final class FotoUtil {
     private FotoUtil() {}
 
     public static Path carpeta() { return Config.DATA_DIR.resolve("fotos"); }
 
-    /** Copia la imagen a app-data/fotos/&lt;codigo&gt;.ext y devuelve el nombre guardado. */
     public static String guardar(File origen, String codigo) {
         String nombre = origen.getName();
         int i = nombre.lastIndexOf('.');

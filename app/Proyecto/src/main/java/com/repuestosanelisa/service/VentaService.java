@@ -20,10 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * RF01/RF02 - salidas. La venta es UNA transacción en MySQL:
- * INSERT venta + INSERT detalle + UPDATE de stock; si algo falla se hace rollback completo.
- */
+
 public class VentaService {
 
     private final Inventario inventario;
@@ -36,7 +33,6 @@ public class VentaService {
         Permisos.exigir(Modulo.VENTAS);
         if (lineas.isEmpty()) throw new NegocioException("Agregue al menos un producto a la venta");
 
-        // Validación rápida con lo que se ve en pantalla (MySQL vuelve a comprobar el stock al descontar).
         for (LineaDetalle l : lineas) {
             Producto p = inventario.buscarProducto(l.getCodigo());
             if (p == null) throw new NegocioException("El producto " + l.getCodigo() + " ya no existe");
@@ -89,11 +85,11 @@ public class VentaService {
                 return ventaId;
             });
         } catch (NegocioException e) {
-            inventario.recargar(); // el stock en pantalla pudo quedar desactualizado
+            inventario.recargar();
             throw e;
         }
 
-        // Ya confirmado en MySQL: se refleja en la lista en memoria.
+
         for (LineaDetalle l : lineas) {
             Producto p = inventario.buscarProducto(l.getCodigo());
             if (p != null) p.setCantidad(p.getCantidad() - l.getCantidad());

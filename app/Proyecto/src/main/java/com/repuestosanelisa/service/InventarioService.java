@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Persistencia de productos (RF01, RF05) en la tabla productos de MySQL. */
 public class InventarioService {
 
     public List<Producto> cargarProductos() {

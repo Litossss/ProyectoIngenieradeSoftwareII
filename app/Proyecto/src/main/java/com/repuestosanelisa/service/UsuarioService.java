@@ -16,12 +16,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/** RF04 (gestión de usuarios) y RF06 (autenticación) sobre la tabla usuarios de MySQL. */
 public class UsuarioService {
 
     private static final String COLUMNAS = "nombre, usuario, contrasena_hash, rol, activo";
 
-    // ---------------- RF06 ----------------
 
     public Usuario login(String usuario, String contrasena) {
         if (usuario == null || usuario.isBlank() || contrasena == null || contrasena.isEmpty()) {
@@ -37,7 +35,6 @@ public class UsuarioService {
 
     public void logout() { Sesion.cerrar(); }
 
-    // ---------------- RF04 (solo Administrador) ----------------
 
     public List<Usuario> listar() {
         Permisos.exigir(Modulo.USUARIOS);
@@ -72,7 +69,6 @@ public class UsuarioService {
         });
     }
 
-    /** Contraseña vacía = se conserva la actual. El nombre de usuario no cambia. */
     public void editar(String usuario, String nombre, String contrasena, Rol rol, boolean activo) {
         Permisos.exigir(Modulo.USUARIOS);
         validarBasicos(nombre, usuario, rol);
@@ -114,7 +110,6 @@ public class UsuarioService {
         if (soyYo) yo.setNombre(nombre.trim());
     }
 
-    // ---------------- consultas internas ----------------
 
     private Usuario buscar(String usuario) {
         return Db.consulta(c -> buscar(c, usuario));

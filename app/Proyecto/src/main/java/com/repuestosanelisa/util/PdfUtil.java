@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-/** PDF de texto (A4, Courier, varias páginas) sin librerías externas. Sirve para reportes y comprobantes. */
 public final class PdfUtil {
     private static final Charset WIN = Charset.forName("windows-1252");
     private static final int ANCHO = 595, ALTO = 842, MARGEN = 40, TAM = 9, INTERLINEA = 11;

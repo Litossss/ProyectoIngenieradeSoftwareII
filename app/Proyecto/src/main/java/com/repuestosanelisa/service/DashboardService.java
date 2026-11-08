@@ -14,12 +14,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Datos del Panel Principal (Pantalla 2).
- *
- * Los indicadores se calculan con los datos ya leídos de MySQL (inventario en memoria y ventas/compras listadas).
- * Mejora futura: 4 consultas SQL (COUNT, COUNT stock bajo, SUM del día, SUM del mes).
- */
+
 public class DashboardService {
 
     public record Kpis(int productos, int pocoStock, double ventasHoy, double comprasMes) {}

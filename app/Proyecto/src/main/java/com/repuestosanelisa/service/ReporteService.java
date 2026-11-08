@@ -16,13 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * RF03 - arma el texto de los reportes (solo Administrador); el PDF lo genera PdfUtil.
- * El reporte de inventario ignora las fechas.
- *
- * Lee ventas y compras desde MySQL con VentaService.listar() / CompraService.listar() y las filtra en memoria.
- * Mejora futura: filtrar en SQL con WHERE fecha BETWEEN ? AND ?.
- */
+
 public class ReporteService {
 
     private final Inventario inventario;

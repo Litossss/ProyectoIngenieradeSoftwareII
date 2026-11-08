@@ -12,14 +12,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-/** Punto de entrada JavaFX: abre el inicio de sesión y, tras autenticarse, la ventana principal. */
 public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
         try {
-            Db.verificar();   // falla pronto y con un mensaje claro si MySQL no está listo
-            Contexto.get();   // carga el inventario desde MySQL
+            Db.verificar();
+            Contexto.get();
         } catch (NegocioException e) {
             Alertas.error(e.getMessage());
             Platform.exit();
@@ -33,8 +32,7 @@ public class App extends Application {
     }
 
     public static void mostrarLogin(Stage stage) throws IOException {
-        // Al volver de la ventana principal se limpian los tamaños mínimos y el estado maximizado;
-        // si no, el login se dibuja cortado dentro de una ventana de 1000x640.
+
         stage.setMaximized(false);
         stage.setMinWidth(0);
         stage.setMinHeight(0);
@@ -43,7 +41,6 @@ public class App extends Application {
         stage.setResizable(false);
         stage.sizeToScene();
         stage.centerOnScreen();
-        // Segundo ajuste cuando la ventana ya cambió de tamaño (evita el "bug gráfico" en Windows).
         Platform.runLater(() -> { stage.setMaximized(false); stage.sizeToScene(); stage.centerOnScreen(); });
     }
 
