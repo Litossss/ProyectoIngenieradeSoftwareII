@@ -15,3 +15,13 @@
 - Implementar consulta rápida de existencias.
 - Ampliar el modelo de producto con categoría, proveedor, descripción y foto.
 - Corregir la carga de `usuarios.xml` de versiones anterior.
+
+## V1.0
+- Reemplazar la persistencia en XML por MySQL ahora se guardan en la base de datos `repuestos_anelisa`.
+- Agregar la clase `Db`  y la configuración de conexión en `Config`.
+- Proteger el stock contra ventas simultáneas descontando solo si todavía hay existencias.
+- Agregar el driver `mysql-connector-j` al `pom.xml`.
+
+## V1.1
+- Agregar la pantalla Proveedores (Se nos olvido) con botón en el menú: crear, editar nombre y contacto, y activar o desactivar.
+- Agregar el módulo `PROVEEDORES` a la matriz de permisos.
