@@ -12,6 +12,7 @@ import java.util.List;
 public final class FotoUtil {
     private FotoUtil() {}
 
+
     public static Path carpeta() { return Config.DATA_DIR.resolve("fotos"); }
 
     public static String guardar(File origen, String codigo) {
